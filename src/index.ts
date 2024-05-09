@@ -2,7 +2,10 @@ import express from "express";
 import dotenv from "dotenv";
 import { router } from "./routes/router";
 
-dotenv.config();
+const path =
+  process.env.NODE_ENV === "production" ? ".env" : ".env.development";
+
+dotenv.config({ path });
 
 const server = express();
 
@@ -12,4 +15,6 @@ server.use(express.json());
 
 server.use(router);
 
-server.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
+server.listen(PORT, () =>
+  console.log(`${process.env.NODE_ENV} server is running on PORT ${PORT}`)
+);
