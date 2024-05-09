@@ -8,6 +8,7 @@ WORKDIR /app
 # Primeira parte é o caminho do arquivo na sua aplicação, segunda parte onde o arquivo copiado estará no contâiner
 COPY ./dist ./dist
 COPY ./package*.json ./
+COPY ./.env ./
 
 # Instale apenas as dependências de produção
 RUN npm install --only=production
