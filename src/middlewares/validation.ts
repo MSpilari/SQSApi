@@ -7,8 +7,10 @@ const validation = (schema: Joi.ObjectSchema) => {
 
     try {
       await schema.validateAsync(userInput, {
+        abortEarly: false,
         errors: { wrap: { label: false } },
       });
+      next();
     } catch (error) {
       next(error);
     }
