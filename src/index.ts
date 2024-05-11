@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { router } from "./routes/router";
+import { errorHandler } from "./middlewares/errorHandler";
 
 const path =
   process.env.NODE_ENV === "production" ? ".env.prod" : ".env.development";
@@ -14,6 +15,8 @@ const PORT = process.env.PORT;
 server.use(express.json());
 
 server.use(router);
+
+server.use(errorHandler);
 
 server.listen(PORT, () =>
   console.log(`${process.env.NODE_ENV} server is running on PORT ${PORT}`)
