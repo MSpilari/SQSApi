@@ -1,10 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
-
-type Body = {
-  email: string;
-  password: string;
-};
+import { User } from "../DTO/User";
 
 class UserService {
   private userRepository;
@@ -13,7 +9,13 @@ class UserService {
     this.userRepository = userRepository;
   }
 
-  addNewUser = async ({ email, password }: Body) => {
+  addNewUser = async ({ email, password }: User) => {
+    const emailExists = await this.userRepository.findFirst({
+      where: { email },
+    });
+
+    if (emailExists) throw new Error("email already exists");
+
     const newUser = await this.userRepository.create({
       data: {
         email,
@@ -22,6 +24,12 @@ class UserService {
     });
 
     return newUser;
+  };
+
+  listAllUsers = async () => {
+    const allUsers = await this.userRepository.findMany();
+
+    return allUsers;
   };
 }
 
