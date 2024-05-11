@@ -1,4 +1,5 @@
 import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
+import Joi from "joi";
 
 const errorHandler: ErrorRequestHandler = (
   error: Error,
@@ -6,14 +7,16 @@ const errorHandler: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  return res
-    .status(500)
-    .json({
-      name: error.name,
-      message: error.message,
-      success: false,
-      stack: process.env.NODE_ENV === "development" ? error.stack : {},
-    });
+  let statusCode = 500;
+
+  if (error instanceof Joi.ValidationError) statusCode = 400;
+
+  return res.status(statusCode).json({
+    success: false,
+    name: error.name,
+    message: error.message,
+    stack: process.env.NODE_ENV === "development" ? error.stack : {},
+  });
 };
 
 export { errorHandler };
