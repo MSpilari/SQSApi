@@ -1,6 +1,8 @@
 services:
   db_prod:
     image: postgres:latest
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER_PROD}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_PROD}
@@ -10,9 +12,14 @@ services:
 
   db_test:
     image: postgres:latest
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER_TEST}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_TEST}
       - POSTGRES_DB=${POSTGRES_DB_TEST}
     ports:
       - "3335:5432"
+volumes:
+  pgdata_prod:
+  pgdata_test:
