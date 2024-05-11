@@ -11,5 +11,6 @@ const userController = new UserController(userService);
 const router = express.Router();
 
 router.post("/newUser", validation(UserSchema), userController.addNewUser);
+router.get("/allUsers", userController.allUsers);
 
 export { router };
