@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
 
 class UserController {
@@ -9,7 +9,9 @@ class UserController {
   }
 
   addNewUser = async (req: Request, res: Response) => {
-    return await this.userService.addNewUser(req.body);
+    const newUser = await this.userService.addNewUser(req.body);
+
+    return res.status(201).json(newUser);
   };
 }
 
