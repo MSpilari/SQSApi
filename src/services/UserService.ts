@@ -19,14 +19,14 @@ class UserService {
 
     const hashPassword = await PasswordHash(password);
 
-    const newUser = await this.userRepository.create({
+    await this.userRepository.create({
       data: {
         email,
         password: hashPassword,
       },
     });
 
-    return newUser;
+    return { message: "User created successfully !" };
   };
 
   listAllUsers = async () => {
