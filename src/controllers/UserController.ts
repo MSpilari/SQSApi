@@ -18,6 +18,16 @@ class UserController {
     }
   };
 
+  login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const message = await this.userService.login(req.body);
+
+      return res.status(200).json(message);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   allUsers = async (req: Request, res: Response) => {
     const allUsers = await this.userService.listAllUsers();
 
