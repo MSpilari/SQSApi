@@ -2,6 +2,8 @@ import { Prisma } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { User } from "../DTO/User";
 import { PasswordHash } from "../helpers/PasswordHash";
+import { PasswordCompare } from "../helpers/PasswordCompare";
+import { JWTGenerator } from "../helpers/JWTGenerator";
 
 class UserService {
   private userRepository;
@@ -27,6 +29,25 @@ class UserService {
     });
 
     return { message: "User created successfully !" };
+  };
+
+  login = async ({ email, password }: User) => {
+    const userExists = await this.userRepository.findFirst({
+      where: { email },
+    });
+
+    if (!userExists) throw new Error("Email does not exists !");
+
+    const isPasswordValid = await PasswordCompare(
+      password,
+      userExists.password
+    );
+
+    if (!isPasswordValid) throw new Error("Email/Password does not exists !");
+
+    const token = JWTGenerator(userExists.email, userExists.id);
+
+    return token;
   };
 
   listAllUsers = async () => {
