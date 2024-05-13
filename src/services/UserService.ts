@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { User } from "../DTO/User";
+import { PasswordHash } from "../helpers/PasswordHash";
 
 class UserService {
   private userRepository;
@@ -16,10 +17,12 @@ class UserService {
 
     if (emailExists) throw new Error("email already exists");
 
+    const hashPassword = await PasswordHash(password);
+
     const newUser = await this.userRepository.create({
       data: {
         email,
-        password,
+        password: hashPassword,
       },
     });
 
