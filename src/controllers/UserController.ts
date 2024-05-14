@@ -20,9 +20,17 @@ class UserController {
 
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const message = await this.userService.login(req.body);
+      const token = await this.userService.login(req.body);
 
-      return res.status(200).json(message);
+      return res
+        .status(200)
+        .cookie("jwt", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 60000,
+        })
+        .json({ success: true, message: "Login successfull" });
     } catch (error) {
       next(error);
     }
