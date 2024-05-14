@@ -1,4 +1,5 @@
 import "./configs/dotenvConfig";
+import helmet from "helmet";
 import express from "express";
 import { errorHandler } from "./middlewares/errorHandler";
 import { router } from "./routes/router";
@@ -6,6 +7,8 @@ import { router } from "./routes/router";
 const server = express();
 
 const PORT = process.env.PORT;
+
+server.use(helmet());
 
 server.use(express.json());
 
