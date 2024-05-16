@@ -1,5 +1,6 @@
 import "./configs/dotenvConfig";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import express from "express";
 import { errorHandler } from "./middlewares/errorHandler";
 import { router } from "./routes/router";
@@ -9,6 +10,8 @@ const server = express();
 const PORT = process.env.PORT;
 
 server.use(helmet());
+
+server.use(cookieParser());
 
 server.use(express.json());
 
