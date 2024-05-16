@@ -59,6 +59,19 @@ class UserService {
     };
   };
 
+  refreshToken = (token: string) => {
+    if (!process.env.REFRESH_SECRET) throw Error("No refresh secret");
+
+    const { email, userId } = JWTVerifier(
+      token,
+      process.env.REFRESH_SECRET
+    ) as UserPayload;
+
+    const newAccessToken = JWTGenerator(email, userId);
+
+    return { accessToken: newAccessToken };
+  };
+
   listAllUsers = async () => {
     const allUsers = await this.userRepository.findMany();
 
