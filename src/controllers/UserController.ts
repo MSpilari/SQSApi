@@ -20,17 +20,32 @@ class UserController {
 
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const token = await this.userService.login(req.body);
+      const { accessToken, refreshToken, user, userId } =
+        await this.userService.login(req.body);
 
       return res
         .status(200)
-        .cookie("jwt", token, {
+        .cookie("refreshToken", refreshToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
-          maxAge: 60000,
+          maxAge: 24 * 60 * 60 * 1000,
         })
-        .json({ success: true, message: "Login successfull" });
+        .json({ success: true, accessToken, user, userId });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { refreshToken } = req.cookies;
+
+      if (!refreshToken) throw new Error("Token not found");
+
+      const newAccessToken = this.userService.refreshToken(refreshToken);
+
+      return res.status(200).json(newAccessToken);
     } catch (error) {
       next(error);
     }
