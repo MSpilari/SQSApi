@@ -4,6 +4,9 @@ import { User } from "../DTO/User";
 import { PasswordHash } from "../helpers/PasswordHash";
 import { PasswordCompare } from "../helpers/PasswordCompare";
 import { JWTGenerator } from "../helpers/JWTGenerator";
+import { RefreshJWTGenerator } from "../helpers/RefreshJWTGenerator";
+import { JWTVerifier } from "../helpers/JWTVerifier";
+import { UserPayload } from "../DTO/UserPayload";
 
 class UserService {
   private userRepository;
@@ -45,9 +48,15 @@ class UserService {
 
     if (!isPasswordValid) throw new Error("Email/Password does not exists !");
 
-    const token = JWTGenerator(userExists.email, userExists.id);
+    const accessToken = JWTGenerator(userExists.email, userExists.id);
+    const refreshToken = RefreshJWTGenerator(userExists.email, userExists.id);
 
-    return token;
+    return {
+      accessToken,
+      refreshToken,
+      user: userExists.email,
+      userId: userExists.id,
+    };
   };
 
   listAllUsers = async () => {
