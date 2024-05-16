@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.post("/newUser", validation(UserSchema), userController.addNewUser);
 router.post("/login", validation(UserSchema), userController.login);
+router.get("/refreshToken", userController.refreshToken);
 router.get("/allUsers", userController.allUsers);
 
 export { router };
