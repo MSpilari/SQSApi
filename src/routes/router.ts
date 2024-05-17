@@ -14,5 +14,6 @@ router.post("/newUser", validation(UserSchema), userController.addNewUser);
 router.post("/login", validation(UserSchema), userController.login);
 router.get("/refreshToken", userController.refreshToken);
 router.get("/allUsers", userController.allUsers);
+router.delete("/deleteUser", userController.deleteUser);
 
 export { router };
