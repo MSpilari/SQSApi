@@ -40,6 +40,10 @@ class UserController {
     return res.status(200).json(newAccessToken);
   });
 
+  deleteUser = TryCatchHandler(async (req: Request, res: Response) => {
+    return res.status(200).json("Delete a User");
+  });
+
   allUsers = async (req: Request, res: Response) => {
     const allUsers = await this.userService.listAllUsers();
 
