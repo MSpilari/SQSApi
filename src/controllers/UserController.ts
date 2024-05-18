@@ -41,7 +41,17 @@ class UserController {
   });
 
   deleteUser = TryCatchHandler(async (req: Request, res: Response) => {
-    return res.status(200).json("Delete a User");
+    const userDeletedEmail = await this.userService.deleteUser(req.user!);
+
+    return res
+      .status(200)
+      .cookie("refreshToken", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        expires: new Date(0),
+      })
+      .json(userDeletedEmail);
   });
 
   allUsers = async (req: Request, res: Response) => {
