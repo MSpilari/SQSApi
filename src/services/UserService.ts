@@ -72,6 +72,13 @@ class UserService {
     return { accessToken: newAccessToken };
   };
 
+  deleteUser = async (userPayload: UserPayload) => {
+    const { email, userId } = userPayload;
+    await this.userRepository.delete({ where: { id: userId, email } });
+
+    return { success: true, deletedUser: email };
+  };
+
   listAllUsers = async () => {
     const allUsers = await this.userRepository.findMany();
 
