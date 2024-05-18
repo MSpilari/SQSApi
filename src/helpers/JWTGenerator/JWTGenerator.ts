@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 
 /**
+ * Generates a JWT token with the given email, user ID, and secret.
  *
  * @param email - The email of the user
  * @param id - The ID from the user
