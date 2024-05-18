@@ -1,12 +1,11 @@
 import { Prisma } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { User } from "../DTO/User";
-import { PasswordHash } from "../helpers/PasswordHash";
-import { PasswordCompare } from "../helpers/PasswordCompare";
-import { JWTGenerator } from "../helpers/JWTGenerator";
-import { RefreshJWTGenerator } from "../helpers/RefreshJWTGenerator";
-import { JWTVerifier } from "../helpers/JWTVerifier";
 import { UserPayload } from "../DTO/UserPayload";
+import { JWTGenerator } from "../helpers/JWTGenerator/JWTGenerator";
+import { JWTVerifier } from "../helpers/JWTVerifier/JWTVerifier";
+import { PasswordCompare } from "../helpers/PasswordCompare/PasswordCompare";
+import { PasswordHash } from "../helpers/PasswordHash/PasswordHash";
 
 class UserService {
   private userRepository;
@@ -48,8 +47,22 @@ class UserService {
 
     if (!isPasswordValid) throw new Error("Email/Password does not exists !");
 
-    const accessToken = JWTGenerator(userExists.email, userExists.id);
-    const refreshToken = RefreshJWTGenerator(userExists.email, userExists.id);
+    const { JWT_SECRET, REFRESH_SECRET } = process.env;
+
+    if (!JWT_SECRET || !REFRESH_SECRET)
+      throw new Error("Token secrets not found !");
+
+    const accessToken = JWTGenerator(
+      userExists.email,
+      userExists.id,
+      JWT_SECRET
+    );
+    const refreshToken = JWTGenerator(
+      userExists.email,
+      userExists.id,
+      REFRESH_SECRET,
+      24 * 3600
+    );
 
     return {
       accessToken,
@@ -60,14 +73,13 @@ class UserService {
   };
 
   refreshToken = (token: string) => {
-    if (!process.env.REFRESH_SECRET) throw Error("No refresh secret");
+    const { JWT_SECRET, REFRESH_SECRET } = process.env;
 
-    const { email, userId } = JWTVerifier(
-      token,
-      process.env.REFRESH_SECRET
-    ) as UserPayload;
+    if (!JWT_SECRET || !REFRESH_SECRET) throw Error("Token secrets not found");
 
-    const newAccessToken = JWTGenerator(email, userId);
+    const { email, userId } = JWTVerifier(token, REFRESH_SECRET) as UserPayload;
+
+    const newAccessToken = JWTGenerator(email, userId, JWT_SECRET);
 
     return { accessToken: newAccessToken };
   };
