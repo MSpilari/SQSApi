@@ -10,7 +10,7 @@ const JWTGenerator = (email: string, id: number) => {
 
   if (!SECRET) throw new Error("Failed to get SECRET to token.");
 
-  return jwt.sign(payload, SECRET, { expiresIn: 60 });
+  return jwt.sign(payload, SECRET, { expiresIn: 15 * 60 });
 };
 
 export { JWTGenerator };
