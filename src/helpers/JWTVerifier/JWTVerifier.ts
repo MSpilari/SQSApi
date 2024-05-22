@@ -10,13 +10,13 @@ import jwt from "jsonwebtoken";
  */
 
 const JWTVerifier = (token: string, secret: string): jwt.JwtPayload => {
-  try {
-    const payload = jwt.verify(token, secret) as jwt.JwtPayload;
+	try {
+		const payload = jwt.verify(token, secret) as jwt.JwtPayload;
 
-    return payload;
-  } catch (error) {
-    throw new Error(`Token verification failed: ${(error as Error).message}`);
-  }
+		return payload;
+	} catch (error) {
+		throw new Error(`Token verification failed: ${(error as Error).message}`);
+	}
 };
 
 export { JWTVerifier };

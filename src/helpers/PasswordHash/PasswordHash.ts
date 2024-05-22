@@ -9,12 +9,12 @@ import bcrypt from "bcrypt";
  */
 
 const PasswordHash = async (
-  password: string,
-  saltRounds: number = 10
+	password: string,
+	saltRounds = 10,
 ): Promise<string> => {
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+	const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  return hashedPassword;
+	return hashedPassword;
 };
 
 export { PasswordHash };

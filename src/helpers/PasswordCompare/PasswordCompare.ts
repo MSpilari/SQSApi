@@ -8,12 +8,12 @@ import bcrypt from "bcrypt";
  */
 
 const PasswordCompare = async (
-  passwordInput: string,
-  passwordDb: string
-): Promise<Boolean> => {
-  const isEqual = await bcrypt.compare(passwordInput, passwordDb);
+	passwordInput: string,
+	passwordDb: string,
+): Promise<boolean> => {
+	const isEqual = await bcrypt.compare(passwordInput, passwordDb);
 
-  return isEqual;
+	return isEqual;
 };
 
 export { PasswordCompare };
