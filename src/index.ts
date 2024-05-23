@@ -2,7 +2,7 @@ import "./configs/dotenvConfig";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import express from "express";
-import { errorHandler } from "./middlewares/errorHandler";
+import { errorHandler } from "./middlewares/errorHandler/errorHandler";
 import { router } from "./routes/router";
 
 const server = express();
@@ -20,5 +20,5 @@ server.use(router);
 server.use(errorHandler);
 
 server.listen(PORT, () =>
-  console.log(`${process.env.NODE_ENV} server is running on PORT ${PORT}`)
+	console.log(`${process.env.NODE_ENV} server is running on PORT ${PORT}`),
 );
