@@ -4,7 +4,7 @@ import { userRepository } from "../repositories/UserRepository";
 import { UserController } from "../controllers/UserController";
 import { validation } from "../middlewares/Validation/validation";
 import { UserSchema } from "../schemas/UserSchema";
-import { validateJWT } from "../middlewares/validateJWT";
+import { validateJWT } from "../middlewares/validateJWT/validateJWT";
 
 const JWT_SECRET = process.env.JWT_SECRET || "not found, will return error";
 
