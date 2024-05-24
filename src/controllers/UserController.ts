@@ -37,15 +37,9 @@ class UserController {
 		const { accessToken, refreshToken, user, userId } =
 			await this.userService.login(req.body);
 
-		return res
-			.status(200)
-			.cookie("refreshToken", refreshToken, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
-				sameSite: "strict",
-				maxAge: 24 * 60 * 60 * 1000,
-			})
-			.json({ success: true, accessToken, user, userId });
+		this.setRefreshTokenCookie(res, refreshToken);
+
+		return res.status(200).json({ success: true, accessToken, user, userId });
 	});
 
 	refreshToken = TryCatchHandler(async (req: Request, res: Response) => {
