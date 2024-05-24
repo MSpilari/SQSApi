@@ -5,6 +5,24 @@ import { TryCatchHandler } from "../helpers/TryCatchHandler";
 class UserController {
 	private userService;
 
+	private setRefreshTokenCookie(res: Response, refreshToken: string) {
+		res.cookie("refreshToken", refreshToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "strict",
+			maxAge: 24 * 60 * 60 * 1000,
+		});
+	}
+
+	private clearRefreshTokenCookie(res: Response) {
+		res.cookie("refreshToken", "", {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "strict",
+			expires: new Date(0),
+		});
+	}
+
 	constructor(userService: UserService) {
 		this.userService = userService;
 	}
