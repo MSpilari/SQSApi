@@ -1,7 +1,7 @@
 import express from "express";
 import { UserService } from "../services/UserService";
 import { userRepository } from "../repositories/UserRepository";
-import { UserController } from "../controllers/UserController";
+import { UserController } from "../controllers/User/UserController";
 import { validation } from "../middlewares/Validation/validation";
 import { UserSchema } from "../schemas/UserSchema";
 import { validateJWT } from "../middlewares/validateJWT/validateJWT";
