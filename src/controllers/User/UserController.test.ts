@@ -45,4 +45,35 @@ describe("User Controller tests", () => {
 		expect(res.json).toHaveBeenCalledWith(newUser);
 		expect(next).toHaveBeenCalled();
 	});
+
+	it("Should login a user and return status 200", async () => {
+		const user = { id: 1, email: "test@email.com", password: "12345" };
+		const tokens = {
+			accessToken: "access-token",
+			refreshToken: "refresh-token",
+		};
+
+		(userService.login as Mock).mockResolvedValue({
+			...tokens,
+			user,
+			userId: user.id,
+		});
+
+		req.body = { email: "test@email.com", password: "12345" };
+
+		await userController.login(req, res, next);
+
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(res.cookie).toHaveBeenCalledWith(
+			"refreshToken",
+			"refresh-token",
+			expect.any(Object),
+		);
+		expect(res.json).toHaveBeenCalledWith({
+			success: true,
+			accessToken: "access-token",
+			user,
+			userId: user.id,
+		});
+	});
 });
