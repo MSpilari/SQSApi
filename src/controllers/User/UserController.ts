@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import type { UserService } from "../../services/UserService";
 import { TryCatchHandler } from "../../helpers/TryCatchHandler";
 
@@ -27,40 +27,56 @@ class UserController {
 		this.userService = userService;
 	}
 
-	addNewUser = TryCatchHandler(async (req: Request, res: Response) => {
-		const newUser = await this.userService.addNewUser(req.body);
+	addNewUser = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const newUser = await this.userService.addNewUser(req.body);
 
-		return res.status(201).json(newUser);
-	});
+			return res.status(201).json(newUser);
+		} catch (error) {
+			next(error);
+		}
+	};
 
-	login = TryCatchHandler(async (req: Request, res: Response) => {
-		const { accessToken, refreshToken, user, userId } =
-			await this.userService.login(req.body);
+	login = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { accessToken, refreshToken, user, userId } =
+				await this.userService.login(req.body);
 
-		this.setRefreshTokenCookie(res, refreshToken);
+			this.setRefreshTokenCookie(res, refreshToken);
 
-		return res.status(200).json({ success: true, accessToken, user, userId });
-	});
+			return res.status(200).json({ success: true, accessToken, user, userId });
+		} catch (error) {
+			next(error);
+		}
+	};
 
-	refreshToken = TryCatchHandler(async (req: Request, res: Response) => {
-		const { refreshToken } = req.cookies;
+	refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { refreshToken } = req.cookies;
 
-		if (!refreshToken) throw new Error("Token not found");
+			if (!refreshToken) throw new Error("Token not found");
 
-		const newAccessToken = this.userService.refreshToken(refreshToken);
+			const newAccessToken = await this.userService.refreshToken(refreshToken);
 
-		return res.status(200).json(newAccessToken);
-	});
+			return res.status(200).json(newAccessToken);
+		} catch (error) {
+			next(error);
+		}
+	};
 
-	deleteUser = TryCatchHandler(async (req: Request, res: Response) => {
-		if (!req.user) throw new Error("User not found");
+	deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			if (!req.user) throw new Error("User not found");
 
-		const userDeletedEmail = await this.userService.deleteUser(req.user);
+			const userDeletedEmail = await this.userService.deleteUser(req.user);
 
-		this.clearRefreshTokenCookie(res);
+			this.clearRefreshTokenCookie(res);
 
-		return res.status(200).json(userDeletedEmail);
-	});
+			return res.status(200).json(userDeletedEmail);
+		} catch (error) {
+			next(error);
+		}
+	};
 
 	allUsers = async (req: Request, res: Response) => {
 		const allUsers = await this.userService.listAllUsers();
