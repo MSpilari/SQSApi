@@ -1,8 +1,14 @@
 import type { NextFunction, Request, Response } from "express";
+import type { AsyncRequestHandler } from "../DTO/AsyncRequestHandler";
 
-const TryCatchHandler = (fn: Function) => {
-	return (req: Request, res: Response, next: NextFunction) => {
-		Promise.resolve(fn(req, res, next)).catch(next);
+const TryCatchHandler = (fn: AsyncRequestHandler) => {
+	return async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			await fn(req, res, next);
+			next();
+		} catch (error) {
+			next(error);
+		}
 	};
 };
 
