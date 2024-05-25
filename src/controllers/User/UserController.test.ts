@@ -43,7 +43,7 @@ describe("User Controller tests", () => {
 
 		expect(res.status).toHaveBeenCalledWith(201);
 		expect(res.json).toHaveBeenCalledWith(newUser);
-		expect(next).toHaveBeenCalled();
+		expect(next).not.toHaveBeenCalled();
 	});
 
 	it("Should login a user and return status 200", async () => {
@@ -75,5 +75,44 @@ describe("User Controller tests", () => {
 			user,
 			userId: user.id,
 		});
+	});
+
+	it("Should refresh token and return new access token", async () => {
+		const newAccessToken = "new-access-token";
+
+		(userService.refreshToken as Mock).mockResolvedValue({
+			accessToken: newAccessToken,
+		});
+
+		req.cookies = { refreshToken: "existing-refresh-token" };
+
+		await userController.refreshToken(req, res, next);
+
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(res.json).toHaveBeenCalledWith({ accessToken: newAccessToken });
+	});
+
+	it("Should delete user and clear refresh token cookie", async () => {
+		const userDeletedEmail = "test@email.com";
+
+		(userService.deleteUser as Mock).mockResolvedValue(userDeletedEmail);
+
+		req.user = {
+			id: 1,
+			email: "test@email.com",
+			iat: 1234,
+			exp: 12345,
+			userId: 1,
+		};
+
+		await userController.deleteUser(req, res, next);
+
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(res.cookie).toHaveBeenCalledWith(
+			"refreshToken",
+			"",
+			expect.any(Object),
+		);
+		expect(res.json).toHaveBeenCalledWith(userDeletedEmail);
 	});
 });
