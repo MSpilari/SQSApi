@@ -22,3 +22,5 @@ server.use(errorHandler);
 server.listen(PORT, () =>
 	console.log(`${process.env.NODE_ENV} server is running on PORT ${PORT}`),
 );
+
+export { server };
