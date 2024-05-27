@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
 import type { UserService } from "../../services/UserService";
-import { TryCatchHandler } from "../../helpers/TryCatchHandler";
 
 class UserController {
 	private userService;
