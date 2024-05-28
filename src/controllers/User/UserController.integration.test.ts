@@ -131,4 +131,13 @@ describe("User Controller integration tests", () => {
 		expect(response.body.success).toBe(true);
 		expect(response.body.deletedUser).toBe(loginData.email);
 	});
+
+	it("Should not delete the user, if the token is incorrect", async () => {
+		const response = await request(server)
+			.delete("/deleteUser")
+			.auth("Incorrect token", { type: "bearer" });
+
+		expect(response.status).toBe(500);
+		expect(response.body.success).toBe(false);
+	});
 });
