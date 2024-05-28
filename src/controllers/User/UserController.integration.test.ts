@@ -91,4 +91,20 @@ describe("User Controller integration tests", () => {
 		expect(response.status).toBe(400);
 		expect(response.body.success).toBe(false);
 	});
+
+	it("Should refresh the token", async () => {
+		const loginData = { email: "test@email.com", password: "password" };
+
+		await request(server).post("/newUser").send(loginData);
+
+		const res = await request(server).post("/login").send(loginData);
+		const refreshToken = res.headers["set-cookie"][0].split(";")[0];
+
+		const response = await request(server)
+			.get("/refreshToken")
+			.set("Cookie", [refreshToken]);
+
+		expect(response.status).toBe(200);
+		expect(response.body).toHaveProperty("accessToken");
+	});
 });
