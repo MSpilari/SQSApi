@@ -116,4 +116,19 @@ describe("User Controller integration tests", () => {
 		expect(response.status).toBe(500);
 		expect(response.body.success).toBe(false);
 	});
+
+	it("Should delete the user", async () => {
+		const loginData = { email: "john@example.com", password: "password" };
+
+		await request(server).post("/newUser").send(loginData);
+		const res = await request(server).post("/login").send(loginData);
+
+		const response = await request(server)
+			.delete("/deleteUser")
+			.auth(`${res.body.accessToken}`, { type: "bearer" });
+
+		expect(response.status).toBe(200);
+		expect(response.body.success).toBe(true);
+		expect(response.body.deletedUser).toBe(loginData.email);
+	});
 });
