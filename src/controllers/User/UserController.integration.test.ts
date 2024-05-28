@@ -33,4 +33,22 @@ describe("User Controller integration tests", () => {
 		expect(response.status).toBe(500);
 		expect(response.body.success).toBe(false);
 	});
+
+	it("Should not add a new user, with the missing email", async () => {
+		const newUser = { email: "", password: "password" };
+
+		const response = await request(server).post("/newUser").send(newUser);
+
+		expect(response.status).toBe(400);
+		expect(response.body.success).toBe(false);
+	});
+
+	it("Should not add a new user, with the missing password", async () => {
+		const newUser = { email: "test@email.com", password: "" };
+
+		const response = await request(server).post("/newUser").send(newUser);
+
+		expect(response.status).toBe(400);
+		expect(response.body.success).toBe(false);
+	});
 });
