@@ -64,4 +64,13 @@ describe("User Controller integration tests", () => {
 		expect(response.headers["set-cookie"]).toHaveLength(1);
 		expect(response.body.success).toBe(true);
 	});
+
+	it("Should not login a user, if the credentials does not exists", async () => {
+		const loginData = { email: "john@example.com", password: "password" };
+
+		const response = await request(server).post("/login").send(loginData);
+
+		expect(response.status).toBe(500);
+		expect(response.body.success).toBe(false);
+	});
 });
