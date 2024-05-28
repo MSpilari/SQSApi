@@ -107,4 +107,13 @@ describe("User Controller integration tests", () => {
 		expect(response.status).toBe(200);
 		expect(response.body).toHaveProperty("accessToken");
 	});
+
+	it("Should not refresh the token, if there's no refresh token available", async () => {
+		const response = await request(server)
+			.get("/refreshToken")
+			.set("Cookie", []);
+
+		expect(response.status).toBe(500);
+		expect(response.body.success).toBe(false);
+	});
 });
