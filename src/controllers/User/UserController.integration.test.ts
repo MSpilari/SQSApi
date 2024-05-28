@@ -22,4 +22,15 @@ describe("User Controller integration tests", () => {
 		expect(response.status).toBe(201);
 		expect(response.body).toHaveProperty("message");
 	});
+
+	it("Should not add a new user, with the same email", async () => {
+		const newUser = { email: "test@email.com", password: "password" };
+
+		await request(server).post("/newUser").send(newUser);
+
+		const response = await request(server).post("/newUser").send(newUser);
+
+		expect(response.status).toBe(500);
+		expect(response.body.success).toBe(false);
+	});
 });
