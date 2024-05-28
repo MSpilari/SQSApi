@@ -51,4 +51,17 @@ describe("User Controller integration tests", () => {
 		expect(response.status).toBe(400);
 		expect(response.body.success).toBe(false);
 	});
+
+	it("Should login a user", async () => {
+		const loginData = { email: "john@example.com", password: "password" };
+
+		await request(server).post("/newUser").send(loginData);
+
+		const response = await request(server).post("/login").send(loginData);
+
+		expect(response.status).toBe(200);
+		expect(response.body).toHaveProperty("accessToken");
+		expect(response.headers["set-cookie"]).toHaveLength(1);
+		expect(response.body.success).toBe(true);
+	});
 });
