@@ -73,4 +73,22 @@ describe("User Controller integration tests", () => {
 		expect(response.status).toBe(500);
 		expect(response.body.success).toBe(false);
 	});
+
+	it("Should not login a user, with empty email", async () => {
+		const loginData = { email: "", password: "password" };
+
+		const response = await request(server).post("/login").send(loginData);
+
+		expect(response.status).toBe(400);
+		expect(response.body.success).toBe(false);
+	});
+
+	it("Should not login a user, with empty password", async () => {
+		const loginData = { email: "test@email.com", password: "" };
+
+		const response = await request(server).post("/login").send(loginData);
+
+		expect(response.status).toBe(400);
+		expect(response.body.success).toBe(false);
+	});
 });
