@@ -5,14 +5,22 @@ import { UserController } from "../controllers/User/UserController";
 import { validation } from "../middlewares/Validation/validation";
 import { UserSchema } from "../schemas/UserSchema";
 import { validateJWT } from "../middlewares/validateJWT/validateJWT";
+import { CategoryService } from "../services/CategoryService";
+import { categoryRepository } from "../repositories/CategoryRepository";
+import { CategoryController } from "../controllers/Category/CategoryController";
+import { CategorySchema } from "../schemas/CategorySchema";
 
 const JWT_SECRET = process.env.JWT_SECRET || "not found, will return error";
 
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
+const categoryService = new CategoryService(categoryRepository);
+const categoryController = new CategoryController(categoryService);
+
 const router = express.Router();
 
+// User Routes
 router.post("/newUser", validation(UserSchema), userController.addNewUser);
 router.post("/login", validation(UserSchema), userController.login);
 router.get("/refreshToken", userController.refreshToken);
@@ -21,6 +29,14 @@ router.delete(
 	"/deleteUser",
 	validateJWT(JWT_SECRET),
 	userController.deleteUser,
+);
+
+// Category Routes
+router.post(
+	"/newCategory",
+	validateJWT(JWT_SECRET),
+	validation(CategorySchema),
+	categoryController.addNewCategory,
 );
 
 export { router };
