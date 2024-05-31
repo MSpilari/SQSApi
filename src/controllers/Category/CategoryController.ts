@@ -9,14 +9,22 @@ class CategoryController {
 	}
 
 	addNewCategory = async (req: Request, res: Response, next: NextFunction) => {
-		res.status(200).json(req.user);
-		// try {
-		// 	const newUser = await this.categoryService.addNewCategory(req.body);
+		try {
+			const newCategory = await this.categoryService.addNewCategory(req.body);
 
-		// 	return res.status(201).json(newUser);
-		// } catch (error) {
-		// 	next(error);
-		// }
+			return res.status(201).json(newCategory);
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	allCategories = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const allCategories = await this.categoryService.allCategories();
+			res.status(200).json(allCategories);
+		} catch (error) {
+			next(error);
+		}
 	};
 }
 
