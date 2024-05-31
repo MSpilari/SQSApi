@@ -10,9 +10,13 @@ class CategoryService {
 	}
 
 	addNewCategory = async ({ title, description, userID }: Category) => {
-		this.categoryRepository.create({
+		return await this.categoryRepository.create({
 			data: { title, description, userID, User: { connect: { id: userID } } },
 		});
+	};
+
+	allCategories = async () => {
+		return await this.categoryRepository.findMany({});
 	};
 
 	updateCategory = async () => {};
