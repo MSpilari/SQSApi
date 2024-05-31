@@ -32,6 +32,7 @@ router.delete(
 );
 
 // Category Routes
+router.get("/allCategories", categoryController.allCategories);
 router.post(
 	"/newCategory",
 	validateJWT(JWT_SECRET),
