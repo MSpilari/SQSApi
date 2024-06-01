@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import type { DefaultArgs } from "@prisma/client/runtime/library";
 import type { Category } from "../DTO/Category";
+import type { CategoryUpdate } from "../DTO/CategoryUpdate";
 
 class CategoryService {
 	private categoryRepository;
@@ -19,7 +20,21 @@ class CategoryService {
 		return await this.categoryRepository.findMany({});
 	};
 
-	updateCategory = async () => {};
+	updateCategory = async ({
+		categoryId,
+		title,
+		description,
+		userID,
+	}: CategoryUpdate) => {
+		await this.categoryRepository.findFirstOrThrow({
+			where: { userID, id: categoryId },
+		});
+
+		return await this.categoryRepository.update({
+			where: { userID, id: categoryId },
+			data: { title, description },
+		});
+	};
 
 	deleteCategory = async () => {};
 }
