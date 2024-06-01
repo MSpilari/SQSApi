@@ -46,5 +46,10 @@ router.put(
 	validation(CategoryUpdateSchema),
 	categoryController.updateCategory,
 );
+router.delete(
+	"/deleteCategory/:id",
+	validateJWT(JWT_SECRET),
+	categoryController.deleteCategory,
+);
 
 export { router };
