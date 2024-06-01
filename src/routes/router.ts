@@ -9,6 +9,7 @@ import { CategoryService } from "../services/CategoryService";
 import { categoryRepository } from "../repositories/CategoryRepository";
 import { CategoryController } from "../controllers/Category/CategoryController";
 import { CategorySchema } from "../schemas/CategorySchema";
+import { CategoryUpdateSchema } from "../schemas/CategoryUpdateSchema";
 
 const JWT_SECRET = process.env.JWT_SECRET || "not found, will return error";
 
@@ -38,6 +39,12 @@ router.post(
 	validateJWT(JWT_SECRET),
 	validation(CategorySchema),
 	categoryController.addNewCategory,
+);
+router.put(
+	"/updateCategory/:id",
+	validateJWT(JWT_SECRET),
+	validation(CategoryUpdateSchema),
+	categoryController.updateCategory,
 );
 
 export { router };
