@@ -35,12 +35,30 @@ class CategoryController {
 
 			const { userId } = req.user;
 
-			const allCategories = await this.categoryService.updateCategory({
+			const updatedCategory = await this.categoryService.updateCategory({
 				categoryId: Number(id),
 				userID: userId,
 				...req.body,
 			});
-			res.status(200).json(allCategories);
+			res.status(200).json(updatedCategory);
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { id } = req.params;
+
+			if (!req.user) throw new Error("User not logged !");
+
+			const { userId } = req.user;
+
+			const deleteCategory = await this.categoryService.deleteCategory(
+				Number(id),
+				userId,
+			);
+			res.status(200).json(deleteCategory);
 		} catch (error) {
 			next(error);
 		}
