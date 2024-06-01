@@ -36,7 +36,15 @@ class CategoryService {
 		});
 	};
 
-	deleteCategory = async () => {};
+	deleteCategory = async (categoryId: number, userID: number) => {
+		await this.categoryRepository.findFirstOrThrow({
+			where: { userID, id: categoryId },
+		});
+
+		return await this.categoryRepository.delete({
+			where: { userID, id: categoryId },
+		});
+	};
 }
 
 export { CategoryService };
