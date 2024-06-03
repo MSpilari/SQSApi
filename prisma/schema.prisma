@@ -20,6 +20,8 @@ model Product {
   price       Int
   category    Category @relation(fields: [categoryID], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryID  Int      @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId      Int
 }
 
 model Category {
@@ -37,4 +39,5 @@ model User {
   email      String     @unique
   password   String
   categories Category[]
+  products   Product[]
 }
