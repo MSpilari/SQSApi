@@ -11,6 +11,12 @@ class CategoryService {
 	}
 
 	addNewCategory = async ({ title, description, userID }: Category) => {
+		const categoryExists = await this.categoryRepository.findFirst({
+			where: { title, userID },
+		});
+
+		if (categoryExists) throw new Error("This category is already created.");
+
 		return await this.categoryRepository.create({
 			data: { title, description, userID, User: { connect: { id: userID } } },
 		});
