@@ -36,6 +36,14 @@ class CategoryService {
 			where: { userID, id: categoryId },
 		});
 
+		const categoryExists = await this.categoryRepository.findFirst({
+			where: { userID, title },
+		});
+		if (categoryExists)
+			throw new Error(
+				"Can't update a category with a title that already exists.",
+			);
+
 		return await this.categoryRepository.update({
 			where: { userID, id: categoryId },
 			data: { title, description },
