@@ -19,7 +19,7 @@ model Product {
   description String
   price       Int
   category    Category @relation(fields: [categoryID], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  categoryID  Int      @unique
+  categoryID  Int
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId      Int
 }
