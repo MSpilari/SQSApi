@@ -27,5 +27,10 @@ router.put(
 	validation(ProductUpdateSchema),
 	productController.updateProduct,
 );
+router.delete(
+	"/deleteProduct/:id",
+	validateJWT(JWT_SECRET),
+	productController.deleteProduct,
+);
 
 export default router;
