@@ -44,9 +44,13 @@ class CategoryService {
 				"Can't update a category with a title that already exists.",
 			);
 
+		const updatedData: any = {};
+		if (title) updatedData.title = title;
+		if (description) updatedData.description = description;
+
 		return await this.categoryRepository.update({
 			where: { userID, id: categoryId },
-			data: { title, description },
+			data: updatedData,
 		});
 	};
 
