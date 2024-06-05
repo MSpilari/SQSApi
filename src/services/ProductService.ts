@@ -47,6 +47,7 @@ class ProductService {
 				"Can't update a product with a title that already exists.",
 			);
 
+		// biome-ignore lint/suspicious/noExplicitAny:
 		const updatedData: any = {};
 		if (title) updatedData.title = title;
 		if (description) updatedData.description = description;
@@ -55,6 +56,16 @@ class ProductService {
 		return await this.productRepository.update({
 			where: { userId: userID, id: productId },
 			data: updatedData,
+		});
+	};
+
+	deleteProduct = async (productId: number, userID: number) => {
+		await this.productRepository.findFirstOrThrow({
+			where: { userId: userID, id: productId },
+		});
+
+		return await this.productRepository.delete({
+			where: { userId: userID, id: productId },
 		});
 	};
 
