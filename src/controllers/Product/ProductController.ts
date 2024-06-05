@@ -25,6 +25,25 @@ class ProductController {
 		}
 	};
 
+	updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { id } = req.params;
+
+			if (!req.user) throw new Error("User not logged !");
+
+			const { userId } = req.user;
+
+			const updatedProduct = await this.productService.updateProduct({
+				productId: Number(id),
+				userID: userId,
+				...req.body,
+			});
+			res.status(200).json(updatedProduct);
+		} catch (error) {
+			next(error);
+		}
+	};
+
 	allProducts = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const allProducts = await this.productService.allProducts();
