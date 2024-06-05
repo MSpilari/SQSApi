@@ -44,6 +44,7 @@ class CategoryService {
 				"Can't update a category with a title that already exists.",
 			);
 
+		// biome-ignore lint/suspicious/noExplicitAny:
 		const updatedData: any = {};
 		if (title) updatedData.title = title;
 		if (description) updatedData.description = description;
