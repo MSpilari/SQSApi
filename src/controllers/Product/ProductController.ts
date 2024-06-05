@@ -44,6 +44,24 @@ class ProductController {
 		}
 	};
 
+	deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { id } = req.params;
+
+			if (!req.user) throw new Error("User not logged !");
+
+			const { userId } = req.user;
+
+			const deleteProduct = await this.productService.deleteProduct(
+				Number(id),
+				userId,
+			);
+			res.status(200).json(deleteProduct);
+		} catch (error) {
+			next(error);
+		}
+	};
+
 	allProducts = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const allProducts = await this.productService.allProducts();
