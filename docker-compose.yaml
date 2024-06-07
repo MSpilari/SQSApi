@@ -20,6 +20,15 @@ services:
       - POSTGRES_DB=${POSTGRES_DB_TEST}
     ports:
       - "3335:5432"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Porta do RabbitMQ Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 volumes:
   pgdata_prod:
   pgdata_test:
