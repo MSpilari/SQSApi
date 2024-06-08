@@ -31,7 +31,20 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq/data
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
+    volumes:
+      - minio_data:/data
+
 volumes:
   pgdata_prod:
   pgdata_test:
   rabbitmq_data:
+  minio_data:
