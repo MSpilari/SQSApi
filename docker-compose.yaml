@@ -29,6 +29,9 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/data
 volumes:
   pgdata_prod:
   pgdata_test:
+  rabbitmq_data:
