@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import { errorHandler } from "./middlewares/errorHandler/errorHandler";
 import { router } from "./routes/router";
+import { consumer } from "./rabbitmq/consumer";
 
 const server = express();
 
@@ -16,6 +17,8 @@ server.use(cookieParser());
 server.use(express.json());
 
 server.use(router);
+
+consumer("catalog_exchange", "catalog_queue");
 
 server.use(errorHandler);
 
