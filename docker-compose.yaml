@@ -36,10 +36,11 @@ services:
     image: minio/minio
     ports:
       - "9000:9000"
+      - "9001:9001" # Porta do WebUi do minIO
     environment:
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
-    command: server /data
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    command: minio server /data  --console-address :9001 # Precisa inserir este comando para mapear a porta do WebUi e iniciar o minIO
     volumes:
       - minio_data:/data
 
