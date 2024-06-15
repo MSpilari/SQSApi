@@ -1,16 +1,17 @@
 import amqp from "amqplib/callback_api";
 
-const rabbitmqUrl = process.env.RABBITMQ_URL;
+const { RABBITMQ_URL } = process.env;
 
 const producer = (
 	exchange: string,
+	routingKey: string,
 	type: string,
 	data: any,
 	userId: number,
 ) => {
-	if (!rabbitmqUrl) throw new Error("RABBITMQ_URL env is missing.");
+	if (!RABBITMQ_URL) throw new Error("RABBITMQ_URL env is missing.");
 
-	amqp.connect(rabbitmqUrl, (error0, connection) => {
+	amqp.connect(RABBITMQ_URL, (error0, connection) => {
 		if (error0) throw error0;
 
 		connection.createChannel((error1, channel) => {
@@ -23,7 +24,7 @@ const producer = (
 			});
 
 			channel.assertExchange(exchange, "direct", { durable: false });
-			channel.publish(exchange, exchange, Buffer.from(msg));
+			channel.publish(exchange, routingKey, Buffer.from(msg));
 			console.log(`[x] Sent ${msg}`);
 		});
 	});
