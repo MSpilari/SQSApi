@@ -80,6 +80,14 @@ class UserController {
 
 			this.clearRefreshTokenCookie(res);
 
+			producer(
+				"catalog_exchange",
+				"catalog_update",
+				"DELETE_OBJECT",
+				userDeletedEmail,
+				req.user.userId,
+			);
+
 			return res.status(200).json(userDeletedEmail);
 		} catch (error) {
 			next(error);
