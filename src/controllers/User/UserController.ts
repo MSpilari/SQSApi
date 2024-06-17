@@ -100,7 +100,18 @@ class UserController {
 		return res.status(200).json(allUsers);
 	};
 
-	userCatalog = async (req: Request, res: Response) => {};
+	userCatalog = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			if (!req.user) throw new Error("User not logged");
+
+			const { userId } = req.user;
+			const userCatalog = await this.userService.retrieveCatalog(userId);
+
+			return res.status(200).json(userCatalog);
+		} catch (error) {
+			next(error);
+		}
+	};
 }
 
 export { UserController };
