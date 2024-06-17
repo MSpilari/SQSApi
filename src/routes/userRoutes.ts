@@ -17,6 +17,7 @@ router.post("/newUser", validation(UserSchema), userController.addNewUser);
 router.post("/login", validation(UserSchema), userController.login);
 router.get("/refreshToken", userController.refreshToken);
 router.get("/allUsers", userController.allUsers);
+router.get("/catalog", validateJWT(JWT_SECRET), userController.userCatalog);
 router.delete(
 	"/deleteUser",
 	validateJWT(JWT_SECRET),
