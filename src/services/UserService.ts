@@ -23,14 +23,14 @@ class UserService {
 
 		const hashPassword = await PasswordHash(password);
 
-		await this.userRepository.create({
+		const newUser = await this.userRepository.create({
 			data: {
 				email,
 				password: hashPassword,
 			},
 		});
 
-		return { message: "User created successfully !" };
+		return { message: "User created successfully !", id: newUser.id };
 	};
 
 	login = async ({ email, password }: User) => {
