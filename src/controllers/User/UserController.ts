@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type { UserService } from "../../services/UserService";
+import { producer } from "../../rabbitmq/producer";
 
 class UserController {
 	private userService;
@@ -29,6 +30,14 @@ class UserController {
 	addNewUser = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const newUser = await this.userService.addNewUser(req.body);
+
+			producer(
+				"catalog_exchange",
+				"catalog_update",
+				"ADD_OBJECT",
+				newUser,
+				newUser.id,
+			);
 
 			return res.status(201).json(newUser);
 		} catch (error) {
@@ -82,6 +91,8 @@ class UserController {
 
 		return res.status(200).json(allUsers);
 	};
+
+	userCatalog = async (req: Request, res: Response) => {};
 }
 
 export { UserController };
