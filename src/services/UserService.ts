@@ -6,6 +6,7 @@ import { JWTGenerator } from "../helpers/JWTGenerator/JWTGenerator";
 import { JWTVerifier } from "../helpers/JWTVerifier/JWTVerifier";
 import { PasswordCompare } from "../helpers/PasswordCompare/PasswordCompare";
 import { PasswordHash } from "../helpers/PasswordHash/PasswordHash";
+import { minioClient } from "../configs/minIOClient";
 
 class UserService {
 	private userRepository;
@@ -95,6 +96,15 @@ class UserService {
 		const allUsers = await this.userRepository.findMany();
 
 		return allUsers;
+	};
+
+	retrieveCatalog = async (userId: number) => {
+		const userCatalog = await minioClient.getObject(
+			"catalogos",
+			`${userId}-catalogo.json`,
+		);
+
+		return userCatalog;
 	};
 }
 
