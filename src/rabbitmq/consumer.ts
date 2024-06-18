@@ -65,7 +65,7 @@ const consumer = (exchange: string, queue: string) => {
 
 						if (!bucketExists) await minioClient.makeBucket(bucketName, "");
 
-						if (type === "ADD_OBJECT")
+						if (type === "ADD_OBJECT" || type === "UPDATE_OBJECT")
 							await saveUpdateObject(bucketName, objectName, catalogJSON);
 
 						if (type === "DELETE_OBJECT")
