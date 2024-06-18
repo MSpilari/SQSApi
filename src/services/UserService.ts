@@ -99,12 +99,30 @@ class UserService {
 	};
 
 	retrieveCatalog = async (userId: number) => {
-		const userCatalog = await minioClient.getObject(
+		const userCatalogStream = await minioClient.getObject(
 			"catalogos",
 			`${userId}-catalogo.json`,
 		);
+		let userCatalogData = "";
 
-		return userCatalog;
+		userCatalogStream.on("data", (chunk) => {
+			userCatalogData += chunk;
+		});
+
+		return new Promise((resolve, reject) => {
+			userCatalogStream.on("end", () => {
+				try {
+					const userCatalogJSON = JSON.parse(userCatalogData);
+					resolve(userCatalogJSON);
+				} catch (error) {
+					reject(new Error("Faild to parse catalog to JSON"));
+				}
+			});
+
+			userCatalogStream.on("error", () => {
+				reject(new Error("Failed to read stream"));
+			});
+		});
 	};
 }
 
