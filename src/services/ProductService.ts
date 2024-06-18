@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client";
 import type { DefaultArgs } from "@prisma/client/runtime/library";
 import type { Product } from "../DTO/Product";
 import type { ProductUpdate } from "../DTO/ProductUpdate";
+import { producer } from "../rabbitmq/producer";
 
 class ProductService {
 	private productRepository;
@@ -23,9 +24,19 @@ class ProductService {
 
 		if (productExists) throw new Error("This product is already created.");
 
-		return await this.productRepository.create({
+		const newProduct = await this.productRepository.create({
 			data: { title, description, price, categoryID, userId: userID },
 		});
+
+		producer(
+			"catalog_exchange",
+			"catalog_update",
+			"UPDATE_OBJECT",
+			newProduct,
+			userID,
+		);
+
+		return newProduct;
 	};
 
 	updateProduct = async ({
@@ -53,10 +64,20 @@ class ProductService {
 		if (description) updatedData.description = description;
 		if (price) updatedData.price = price;
 
-		return await this.productRepository.update({
+		const productUpdated = await this.productRepository.update({
 			where: { userId: userID, id: productId },
 			data: updatedData,
 		});
+
+		producer(
+			"catalog_exchange",
+			"catalog_update",
+			"UPDATE_OBJECT",
+			productUpdated,
+			userID,
+		);
+
+		return productUpdated;
 	};
 
 	deleteProduct = async (productId: number, userID: number) => {
@@ -64,9 +85,19 @@ class ProductService {
 			where: { userId: userID, id: productId },
 		});
 
-		return await this.productRepository.delete({
+		const deletedProduct = await this.productRepository.delete({
 			where: { userId: userID, id: productId },
 		});
+
+		producer(
+			"catalog_exchange",
+			"catalog_update",
+			"UPDATE_OBJECT",
+			deletedProduct,
+			userID,
+		);
+
+		return deletedProduct;
 	};
 
 	allProducts = async () => {

@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client";
 import type { DefaultArgs } from "@prisma/client/runtime/library";
 import type { Category } from "../DTO/Category";
 import type { CategoryUpdate } from "../DTO/CategoryUpdate";
+import { producer } from "../rabbitmq/producer";
 
 class CategoryService {
 	private categoryRepository;
@@ -17,9 +18,19 @@ class CategoryService {
 
 		if (categoryExists) throw new Error("This category is already created.");
 
-		return await this.categoryRepository.create({
+		const newCategory = await this.categoryRepository.create({
 			data: { title, description, userID, User: { connect: { id: userID } } },
 		});
+
+		producer(
+			"catalog_exchange",
+			"catalog_update",
+			"UPDATE_OBJECT",
+			newCategory,
+			userID,
+		);
+
+		return newCategory;
 	};
 
 	allCategories = async () => {
@@ -49,10 +60,20 @@ class CategoryService {
 		if (title) updatedData.title = title;
 		if (description) updatedData.description = description;
 
-		return await this.categoryRepository.update({
+		const updatedCategory = await this.categoryRepository.update({
 			where: { userID, id: categoryId },
 			data: updatedData,
 		});
+
+		producer(
+			"catalog_exchange",
+			"catalog_update",
+			"UPDATE_OBJECT",
+			updatedCategory,
+			userID,
+		);
+
+		return updatedCategory;
 	};
 
 	deleteCategory = async (categoryId: number, userID: number) => {
@@ -60,9 +81,19 @@ class CategoryService {
 			where: { userID, id: categoryId },
 		});
 
-		return await this.categoryRepository.delete({
+		const deletedCategory = await this.categoryRepository.delete({
 			where: { userID, id: categoryId },
 		});
+
+		producer(
+			"catalog_exchange",
+			"catalog_update",
+			"UPDATE_OBJECT",
+			deletedCategory,
+			userID,
+		);
+
+		return deletedCategory;
 	};
 }
 
