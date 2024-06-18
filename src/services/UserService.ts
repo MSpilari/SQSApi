@@ -7,6 +7,7 @@ import { JWTVerifier } from "../helpers/JWTVerifier/JWTVerifier";
 import { PasswordCompare } from "../helpers/PasswordCompare/PasswordCompare";
 import { PasswordHash } from "../helpers/PasswordHash/PasswordHash";
 import { minioClient } from "../configs/minIOClient";
+import { producer } from "../rabbitmq/producer";
 
 class UserService {
 	private userRepository;
@@ -31,7 +32,15 @@ class UserService {
 			},
 		});
 
-		return { message: "User created successfully !", id: newUser.id };
+		producer(
+			"catalog_exchange",
+			"catalog_update",
+			"ADD_OBJECT",
+			newUser,
+			newUser.id,
+		);
+
+		return { message: "User created successfully !" };
 	};
 
 	login = async ({ email, password }: User) => {
@@ -89,6 +98,13 @@ class UserService {
 		const { email, userId } = userPayload;
 		await this.userRepository.delete({ where: { id: userId, email } });
 
+		producer(
+			"catalog_exchange",
+			"catalog_update",
+			"DELETE_OBJECT",
+			email,
+			userId,
+		);
 		return { success: true, deletedUser: email };
 	};
 
