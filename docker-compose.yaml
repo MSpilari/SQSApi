@@ -27,8 +27,8 @@ services:
       - "5672:5672"
       - "15672:15672" # Porta do RabbitMQ Management UI
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq/data
 
@@ -38,8 +38,8 @@ services:
       - "9000:9000"
       - "9001:9001" # Porta do WebUi do minIO
     environment:
-      MINIO_ROOT_USER: minio
-      MINIO_ROOT_PASSWORD: minio123
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     command: minio server /data  --console-address :9001 # Precisa inserir este comando para mapear a porta do WebUi e iniciar o minIO
     volumes:
       - minio_data:/data
