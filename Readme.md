@@ -1,66 +1,101 @@
-# SQS Api
+# Product Catalog Management API
 
-## Technologies
+## Overview
 
-- NodeJs
-- Express
-- Prisma
-- Typescript
-- PostgreSQL
-- RabbitMQ
-- MinIO
-- Docker
+This project is an API for a product catalog management system in a marketplace application. The API allows users to manage products and categories, associate products with categories, and maintain their product catalog. The system is designed to handle multiple requests per second and ensure that the product catalog remains up-to-date and accessible.
 
-## Challenge
+### Technologies Used
 
-Your task is to develop an API using Node.js for a product catalog management system in a marketplace application. You should analyze and convert the following user stories into routes for the application.
+- **Node.js**: Backend runtime environment
+- **Express.js**: Web framework for Node.js
+- **PostgreSQL**: Database for storing product and category data
+- **RabbitMQ**: Service for catalog change notifications
+- **MinIO**: Storage for catalog JSON files
+- **Docker**: Containerization platform
 
-### User Stories
-
-- As a user, I want to register a product with its owner, so that I can access its data in the future (title, description, price, category, owner ID).
-
-- As a user, I want to register a category with its owner, so that I can access its data in the future (title, description, owner ID).
-
-- As a user, I want to associate a product with a category.
-
-- As a user, I want to update the data of a product or category.
-
-- As a user, I want to delete a product or category from my catalog.
+### Constraints
 
 - A product can only be associated with one category at a time.
+- Products and categories belong to only one owner.
+- The catalog should handle multiple requests per second for editing items/categories and accessing the catalog search endpoint.
 
-- Assume that products and categories belong only to one owner.
+### Catalog Management
 
-- Keep in mind that this is an online product catalog, which means there will be multiple requests for editing items/categories per second, as well as accessing the catalog search endpoint.
+- The product catalog is considered a JSON compilation of all available categories and items owned by a user.
+- Changes to the product catalog are published to the "catalog-emit" queue in RabbitMQ.
+- A consumer listens to catalog changes for a specific owner and updates the catalog JSON in a MinIO bucket.
 
-- Consider the product catalog as a JSON compilation of all available categories and items owned by a user. This way, the catalog search endpoint does not need to fetch information from the database.
+### Setup Instructions
 
-- Whenever there is a change in the product catalog, publish this change to RabbitMQ.
+#### Docker Setup
 
-- Implement a consumer that listens to catalog changes for a specific owner using RabbitMQ.
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/MSpilari/SQSApi.git
+    
+    ```
 
-- When the consumer receives a message, search the database for that owner's catalog, generate the catalog JSON, and publish it to a MinIO bucket.
+2. Create a `.env` file in the root directory and add the following:
+    ```plaintext
+    POSTGRES_USER_TEST= ""
+    POSTGRES_PASSWORD_TEST=""
+    POSTGRES_DB_TEST=""
+    POSTGRES_USER_PROD=""
+    POSTGRES_PASSWORD_PROD=""
+    POSTGRES_DB_PROD=""
+    RABBITMQ_URL=""
+   ```
+   2.1 Create a `.env.development` file in the root directory and add the following:
+    ```plaintext
+    DATABASE_URL=""
+    PORT=""
+    POSTGRES_USER_TEST=""
+    POSTGRES_PASSWORD_TEST=""
+    POSTGRES_DB_TEST=""
+    JWT_SECRET=""
+    REFRESH_SECRET=""
+    RABBITMQ_URL=""
+    MINIO_ENDPOINT="" 
+    MINIO_PORT=""
+    MINIO_ACCESS_KEY=""
+    MINIO_SECRET_KEY=""
+   ``` 
+   2.2 Create a `.env.prod` file in the root directory and add the following:
+    ```plaintext
+    DATABASE_URL=""
+    PORT=""
+    POSTGRES_USER_PROD=""
+    POSTGRES_PASSWORD_PROD=""
+    POSTGRES_DB_PROD=""
+    JWT_SECRET=""
+    REFRESH_SECRET=""
+    RABBITMQ_URL=""
+    MINIO_ENDPOINT="" 
+    MINIO_PORT=""
+    MINIO_ACCESS_KEY=""
+    MINIO_SECRET_KEY=""
+   ``` 
 
-## Components
+3. Run the application using Docker Compose:
+    ```bash
+    docker-compose up -d
+    ```
 
-- **Client**: Represents the users interacting with the application through the API. They can send HTTP requests to create, update, or delete products and categories.
+#### RabbitMQ Integration
 
-- **API (Node.js)**: The API is built in Node.js and is responsible for receiving HTTP requests from clients, validating and processing these requests, and interacting with the database.
+- **Producer**: Used for publishing catalog change notifications.
+- **Consumer**: Listens to the "catalog-emit" queue. On receiving a message, it fetches the owner's catalog from the database, generates the catalog JSON, and uploads it to the specified MinIO bucket.
 
-- **Database**: Stores the data of the product catalog and categories. The API interacts directly with the database to perform CRUD (Create, Read, Update, Delete) operations.
+#### MinIO Integration
 
-- **RabbitMQ**: Acts as a message broker for asynchronous communication between different components of the system. The API publishes events related to registration, update, and deletion operations of products and categories. A queue consumer can then process these events as needed.
+- **Bucket**: Used for storing the catalog JSON files.
 
-- **Queue Consumer**: Responsible for consuming messages from RabbitMQ and performing additional tasks based on these messages. For example, it can update caches, index data in a search engine, or perform other asynchronous operations related to changes in the product catalog.
+### Consumer for Catalog Changes
 
-## Workflow
+- Listens to the "catalog-emit" queue in RabbitMQ.
+- On receiving a message, fetches the owner's catalog from the database.
+- Generates the catalog JSON and uploads it to the specified MinIO bucket.
 
-1. A client sends an HTTP request to the API to perform an operation, such as creating a new product.
+## Conclusion
 
-2. The API receives the request, validates the data, and performs the corresponding operation in the database, such as inserting a new product record.
-
-3. After completing the operation in the database successfully, the API publishes an event related to the operation on RabbitMQ, indicating that a new product has been registered.
-
-4. The queue consumer is constantly listening to the RabbitMQ queue. When a new message is published on the queue, it consumes it and performs additional tasks based on the content of the message.
-
-5. For example, when the queue consumer receives a message indicating that a new product has been registered, it can update the product cache to reflect the latest change.
+This API provides a robust system for managing a product catalog in a marketplace application, ensuring efficient handling of multiple requests and seamless integration with RabbitMQ and MinIO for catalog updates and storage. Running the application via Docker ensures a consistent and easily deployable environment.
