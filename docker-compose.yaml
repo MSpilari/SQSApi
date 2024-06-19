@@ -1,4 +1,17 @@
 services:
+  node_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3333:3333"
+    depends_on:
+      - db_prod
+      - rabbitmq
+      - minio
+
   db_prod:
     image: postgres:latest
     volumes:
