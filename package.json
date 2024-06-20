@@ -9,7 +9,8 @@
     "dev": "NODE_ENV=development tsnd --respawn --transpile-only --ignore-watch node_modules src/index.ts",
     "build": "tsc",
     "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev",
-    "studio:dev": "dotenv -e .env.development -- npx prisma studio"
+    "studio:dev": "dotenv -e .env.development -- npx prisma studio",
+    "migrate:prod": "dotenv -e .env.prod -- npx prisma migrate dev"
   },
   "keywords": [],
   "author": "MSpilari",
