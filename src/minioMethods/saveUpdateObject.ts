@@ -8,12 +8,7 @@ const saveUpdateObject = async (
 	return await minioClient.putObject(
 		bucketName,
 		objectName,
-		Buffer.from(catalogJSON),
-		(err: any, etag: any) => {
-			if (err) throw new Error(err);
-
-			console.log("Catalog JSON saved or updated at MinIO", etag);
-		},
+		Buffer.from(catalogJSON)
 	);
 };
 
