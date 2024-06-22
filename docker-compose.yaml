@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
+    restart: "always"
     ports:
       - "3333:3333"
     depends_on:
@@ -51,8 +52,8 @@ services:
       - "9000:9000"
       - "9001:9001" # Porta do WebUi do minIO
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
     command: minio server /data  --console-address :9001 # Precisa inserir este comando para mapear a porta do WebUi e iniciar o minIO
     volumes:
       - minio_data:/data
