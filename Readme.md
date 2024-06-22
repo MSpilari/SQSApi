@@ -38,47 +38,79 @@ This project is an API for a product catalog management system in a marketplace 
 2. Create a `.env` file in the root directory and add the following:
     ```plaintext
     POSTGRES_USER_TEST="<Choose whatever you want>"
+    
     POSTGRES_PASSWORD_TEST="<Choose whatever you want>"
+    
     POSTGRES_DB_TEST="<Choose whatever you want>"
+    
     POSTGRES_USER_PROD="<Choose whatever you want>"
+    
     POSTGRES_PASSWORD_PROD="<Choose whatever you want>"
+    
     POSTGRES_DB_PROD="<Choose whatever you want>"
+    
     RABBITMQ_DEFAULT_USER="<Choose whatever you want>"
+    
     RABBITMQ_DEFAULT_PASS="<Choose whatever you want>"
-    RABBITMQ_URL="amqp://RABBITMQ_DEFAULT_USER:RABBITMQ_DEFAULT_PASS@<The name of rabbitmq service on the docker compose file or localhost>:<The port of rabbitmq you set at the docker compose file>/"
-    MINIO_ENDPOINT="http://minio:<Port you set on docker compose file> or localhost" 
-    MINIO_PORT="The port set at docker compose file"
+    
+    RABBITMQ_URL="amqp://RABBITMQ_DEFAULT_USER:RABBITMQ_DEFAULT_PASS@rabbitmq:5672/" 
+    
+    MINIO_PORT="9000"
+    
     MINIO_ACCESS_KEY="<Choose whatever you want>"
+    
     MINIO_SECRET_KEY="<Choose whatever you want>"
    ```
    2.1 Create a `.env.development` file in the root directory and add the following:
     ```plaintext
-    DATABASE_URL="postgresql://POSTGRES_USER_TEST:POSTGRES_PASSWORD_TEST@<The name of db test service on the docker compose file or localhost>:<Port of db test on the docker compose file>/POSTGRES_DB_TEST?schema=public"
+    DATABASE_URL="postgresql://POSTGRES_USER_TEST:POSTGRES_PASSWORD_TEST@localhost:3335/POSTGRES_DB_TEST?schema=public"
+    
     PORT=""
+    
     POSTGRES_USER_TEST=""
+    
     POSTGRES_PASSWORD_TEST=""
+    
     POSTGRES_DB_TEST=""
+    
     JWT_SECRET=""
+    
     REFRESH_SECRET=""
-    RABBITMQ_URL=""
-    MINIO_ENDPOINT="" 
-    MINIO_PORT=""
+    
+    RABBITMQ_URL="amqp://RABBITMQ_DEFAULT_USER:RABBITMQ_DEFAULT_PASS@localhost:5672/"
+    
+    MINIO_ENDPOINT="localhost" 
+    
+    MINIO_PORT="9000"
+    
     MINIO_ACCESS_KEY=""
+    
     MINIO_SECRET_KEY=""
    ``` 
    2.2 Create a `.env.prod` file in the root directory and add the following:
     ```plaintext
-    DATABASE_URL="postgresql://POSTGRES_USER_PROD:POSTGRES_PASSWORD_PROD@<The name of db prod service on the docker compose file or localhost>:<Port of db prod on the docker compose file>/POSTGRES_DB_PROD?schema=public"
+    DATABASE_URL="postgresql://POSTGRES_USER_PROD:POSTGRES_PASSWORD_PROD@db_prod:5432/POSTGRES_DB_PROD?schema=public"
+    
     PORT=""
+    
     POSTGRES_USER_PROD=""
+    
     POSTGRES_PASSWORD_PROD=""
+    
     POSTGRES_DB_PROD=""
+    
     JWT_SECRET=""
+    
     REFRESH_SECRET=""
-    RABBITMQ_URL=""
-    MINIO_ENDPOINT="" 
-    MINIO_PORT=""
+    
+    RABBITMQ_URL="amqp://RABBITMQ_DEFAULT_USER:RABBITMQ_DEFAULT_PASS@rabbitmq:5672/"
+    
+    MINIO_ENDPOINT="minio" 
+    
+    MINIO_PORT="9000"
+    
     MINIO_ACCESS_KEY=""
+    
     MINIO_SECRET_KEY=""
    ``` 
 
