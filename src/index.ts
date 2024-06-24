@@ -5,10 +5,13 @@ import express from "express";
 import { errorHandler } from "./middlewares/errorHandler/errorHandler";
 import { router } from "./routes/router";
 import { consumer } from "./rabbitmq/consumer";
+import { swaggerSpec, swaggerUi } from "./configs/swaggerConfig";
 
 const server = express();
 
 const PORT = process.env.PORT;
+
+server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 server.use(helmet());
 
