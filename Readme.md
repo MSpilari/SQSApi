@@ -119,6 +119,10 @@ This project is an API for a product catalog management system in a marketplace 
     docker-compose up -d
     ```
 
+#### Documentation
+
+ The Api docs is served from swagger at `localhost:3333/api-docs` or `localhost:6666/api-docs`
+
 #### RabbitMQ Integration
 
 - **Producer**: Used for publishing catalog change notifications.
