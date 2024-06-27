@@ -1,0 +1,9 @@
+node_modules
+dist
+.dockerignore
+.gitignore
+biome.json
+docker-compose.*.yaml
+Dockerfile
+Readme.md
+vitest.config.ts
