@@ -2,7 +2,7 @@ services:
   node_server:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     environment:
       - NODE_ENV=production
     restart: "always"
@@ -23,17 +23,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB_PROD}
     ports:
       - "3337:5432"
-
-  db_test:
-    image: postgres:latest
-    volumes:
-      - pgdata_test:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER_TEST}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_TEST}
-      - POSTGRES_DB=${POSTGRES_DB_TEST}
-    ports:
-      - "3335:5432"
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -60,6 +49,5 @@ services:
 
 volumes:
   pgdata_prod:
-  pgdata_test:
   rabbitmq_data:
   minio_data:

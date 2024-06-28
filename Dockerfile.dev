@@ -1,0 +1,21 @@
+# Use a imagem do NodeJs mais próxima da versão que está instalada localmente
+FROM node:20
+
+# Diretório da aplicação dentro do contêiner
+WORKDIR /app
+
+# Copie o package.json e o package-lock.json
+COPY package*.json ./
+
+# Instale apenas as dependências
+RUN npm install
+
+# Copie o script wait-for-it.sh e torne-o executável
+COPY wait-for-it.sh /app/wait-for-it.sh
+RUN chmod +x /app/wait-for-it.sh
+
+# Exponha a porta em que o aplicativo será executado
+EXPOSE 3333
+
+# Comando para iniciar a aplicação
+CMD ["sh", "-c", "/app/wait-for-it.sh db_test:5432 -- npm run migrate:dev && npm run dev"]
